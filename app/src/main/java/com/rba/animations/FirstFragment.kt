@@ -1,13 +1,16 @@
 package com.rba.animations
 
-import android.animation.ObjectAnimator
-import android.animation.PropertyValuesHolder
+import android.animation.*
 import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.LinearInterpolator
+import android.widget.FrameLayout
+import androidx.appcompat.widget.AppCompatImageView
 import com.rba.animations.databinding.FragmentFirstBinding
 
 class FirstFragment : Fragment() {
@@ -18,6 +21,7 @@ class FirstFragment : Fragment() {
     ): View? {
         val binding = FragmentFirstBinding.inflate(inflater)
 
+        // Rotate the view for a second around its center once
         binding.rotateButton.setOnClickListener {
             val animator = ObjectAnimator.ofFloat(binding.starImageview, View.ROTATION, -360f, 0f)
             animator.duration = 1000
@@ -25,6 +29,7 @@ class FirstFragment : Fragment() {
             animator.start()
         }
 
+        // Translate the view 200 pixels to the right and back
         binding.translateButton.setOnClickListener {
             val animator = ObjectAnimator.ofFloat(binding.starImageview, View.TRANSLATION_X, 200f)
             animator.repeatCount = 1
@@ -33,6 +38,7 @@ class FirstFragment : Fragment() {
             animator.start()
         }
 
+        // Scale the view up to 4x its default size and back
         binding.scaleButton.setOnClickListener {
             val scaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, 4f)
             val scaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 4f)
@@ -44,6 +50,7 @@ class FirstFragment : Fragment() {
             animator.start()
         }
 
+        // Fade the view out to completely transparent and then back to completely opaque
         binding.fadeButton.setOnClickListener {
             val animator = ObjectAnimator.ofFloat(binding.starImageview, View.ALPHA, 0f)
             animator.repeatCount = 1
@@ -52,6 +59,10 @@ class FirstFragment : Fragment() {
             animator.start()
         }
 
+        // Animate the color of the star's container from black to red over a half
+        // second, then reverse back to black. Note that using a propertyName of
+        // "backgroundColor" will cause the animator to call the backgroundColor property
+        // (in Kotlin) or setBackgroundColor(int) (in Java).
         binding.colorizeButton.setOnClickListener {
             val animator = ObjectAnimator.ofArgb(
                 binding.starImageview.parent,
@@ -62,6 +73,66 @@ class FirstFragment : Fragment() {
             animator.repeatMode = ObjectAnimator.REVERSE
             animator.disableViewDuringAnimation(it)
             animator.start()
+        }
+
+        binding.showerButton.setOnClickListener {
+            // Create a new star view in a random X position above the container.
+            // Make it rotateButton about its center as it falls to the bottom.
+
+            // Local variables we'll need in the code below
+            val container = binding.starImageview.parent as ViewGroup
+            val containerW = container.width
+            val containerH = container.height
+            var starW: Float = binding.starImageview.width.toFloat()
+            var starH: Float = binding.starImageview.height.toFloat()
+
+            // Create the new star (an ImageView holding our drawable) and add it to the container
+            val newStar = AppCompatImageView(requireContext())
+            newStar.setImageResource(R.drawable.ic_star)
+            newStar.layoutParams = FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT
+            )
+            container.addView(newStar)
+
+            // Scale the view randomly between 10-160% of its default size
+            newStar.scaleX = Math.random().toFloat() * 1.5f + .1f
+            newStar.scaleY = newStar.scaleX
+            starW *= newStar.scaleX
+            starH *= newStar.scaleY
+
+            // Position the view at a random place between the left and right edges of the container
+            newStar.translationX = Math.random().toFloat() * containerW - starW / 2
+
+            // Create an animator that moves the view from a starting position right about the container
+            // to an ending position right below the container. Set an accelerate interpolator to give
+            // it a gravity/falling feel
+            val mover =
+                ObjectAnimator.ofFloat(newStar, View.TRANSLATION_Y, -starH, containerH + starH)
+            mover.interpolator = AccelerateInterpolator(1f)
+
+            // Create an animator to rotateButton the view around its center up to three times
+            val rotate = ObjectAnimator.ofFloat(
+                newStar, View.ROTATION,
+                (Math.random() * 1080).toFloat()
+            )
+            rotate.interpolator = LinearInterpolator()
+
+            // Use an AnimatorSet to play the falling and rotating animators in parallel for a duration
+            // of a half-second to two seconds
+            val set = AnimatorSet()
+            set.playTogether(mover, rotate)
+            set.duration = (Math.random() * 1500 + 500).toLong()
+
+            // When the animation is done, remove the created view from the container
+            set.addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator?) {
+                    container.removeView(newStar)
+                }
+            })
+
+            // Start the animation
+            set.start()
         }
 
         return binding.root
