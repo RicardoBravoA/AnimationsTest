@@ -1,6 +1,7 @@
 package com.rba.animations
 
 import android.animation.ObjectAnimator
+import android.animation.PropertyValuesHolder
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -25,6 +26,17 @@ class FirstFragment : Fragment() {
 
         binding.translateButton.setOnClickListener {
             val animator = ObjectAnimator.ofFloat(binding.starImageview, View.TRANSLATION_X, 200f)
+            animator.repeatCount = 1
+            animator.repeatMode = ObjectAnimator.REVERSE
+            animator.disableViewDuringAnimation(it)
+            animator.start()
+        }
+
+        binding.scaleButton.setOnClickListener {
+            val scaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, 4f)
+            val scaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 4f)
+            val animator =
+                ObjectAnimator.ofPropertyValuesHolder(binding.starImageview, scaleX, scaleY)
             animator.repeatCount = 1
             animator.repeatMode = ObjectAnimator.REVERSE
             animator.disableViewDuringAnimation(it)
