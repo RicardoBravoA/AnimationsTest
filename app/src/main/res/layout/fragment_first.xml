@@ -6,7 +6,6 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/standard_margin"
         tools:context=".FirstFragment">
 
         <Button
@@ -92,7 +91,7 @@
             app:layout_constraintVertical_bias="0.0">
 
             <ImageView
-                android:id="@+id/star"
+                android:id="@+id/star_imageview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

@@ -1,5 +1,6 @@
 package com.rba.animations
 
+import android.animation.ObjectAnimator
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -13,8 +14,15 @@ class FirstFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         val binding = FragmentFirstBinding.inflate(inflater)
+
+        binding.rotateButton.setOnClickListener {
+            val animator = ObjectAnimator.ofFloat(binding.starImageview, View.ROTATION, -360f, 0f)
+            animator.duration = 1000
+            animator.disableViewDuringAnimation(it)
+            animator.start()
+        }
+
         return binding.root
     }
 }
