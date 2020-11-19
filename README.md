@@ -34,7 +34,7 @@ The project has this features.
   <img src="gif/animation.gif" alt="gif" width="200" height="354"/><br>
 </p>
 
-Main
+- Main
     - Rotate Button
         - Rotate the view for a second around its center once
     - Translate Button
