@@ -23,6 +23,14 @@ class FirstFragment : Fragment() {
             animator.start()
         }
 
+        binding.translateButton.setOnClickListener {
+            val animator = ObjectAnimator.ofFloat(binding.starImageview, View.TRANSLATION_X, 200f)
+            animator.repeatCount = 1
+            animator.repeatMode = ObjectAnimator.REVERSE
+            animator.disableViewDuringAnimation(it)
+            animator.start()
+        }
+
         return binding.root
     }
 }
