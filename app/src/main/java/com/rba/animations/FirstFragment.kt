@@ -2,6 +2,7 @@ package com.rba.animations
 
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
+import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -45,6 +46,18 @@ class FirstFragment : Fragment() {
 
         binding.fadeButton.setOnClickListener {
             val animator = ObjectAnimator.ofFloat(binding.starImageview, View.ALPHA, 0f)
+            animator.repeatCount = 1
+            animator.repeatMode = ObjectAnimator.REVERSE
+            animator.disableViewDuringAnimation(it)
+            animator.start()
+        }
+
+        binding.colorizeButton.setOnClickListener {
+            val animator = ObjectAnimator.ofArgb(
+                binding.starImageview.parent,
+                "backgroundColor", Color.BLACK, Color.RED
+            )
+            animator.duration = 500
             animator.repeatCount = 1
             animator.repeatMode = ObjectAnimator.REVERSE
             animator.disableViewDuringAnimation(it)
